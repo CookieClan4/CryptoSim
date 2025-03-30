@@ -1,161 +1,107 @@
-// initialize
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-var money, days, reward;
-var miners = [0, 0, 0];
-var upgrades = [0, 0, 0];
-var upgradesCosts = [100, 250, 1000];
-var minersCosts = [20, 750, 25000];
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+        }
 
-function initialize () {
-  money = parseFloat(localStorage.getItem("Money")) || 20;
-  days = parseInt(localStorage.getItem("Days")) || 0;
-  reward = localStorage.getItem("Reward") || "Pay Per Share";
-  for (let i = 0; i < miners.length; i++) {
-    miners[i] = parseInt(localStorage.getItem("Miners" + i)) || 0;
-  }
-  for (let i = 0; i < upgrades.length; i++) {
-    upgrades[i] = parseInt(localStorage.getItem("Upgrades" + i)) || 0;
-  }
-  minersCosts = [20, 750, 25000];
-  for (let i = 0; i < minersCosts.length; i++) {
-    minersCosts[i] = parseFloat(localStorage.getItem("MinersCosts" + i)) || minersCosts[i];
-  }
-}
-initialize();
+        .container {
+            display: flex;
+            margin: 20px;
+        }
 
-// day function
-function day () {
-  var hashrate = (miners[0] * 100 + miners[1] * 2500 + miners[2] * 15000) * (1 + 0.1 * upgrades.reduce((acc, curr) => acc + curr, 0));
-  hashrate *= 86400;
-  if (reward == "Pay Per Share" && hashrate != 0) {
-    var difficulty = 2**20;
-    money += poisson(hashrate, difficulty) * difficulty / 2**32 * 0.95 * 200;
-  } else if (hashrate != 0) {
-    var difficulty = 2**32
-    money += poisson(hashrate, difficulty) * 200;
-  }
-  days++;
-  updateScreen();
-  updateLocalValues();
-}
-setInterval(day, 1000)
-updateScreen();
+        .left-column {
+            width: 25%;
+            padding: 20px;
+            background-color: #f4f4f4;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-// big rng calculate function (idk how it works but it does i love math)
+        .right-columns {
+            display: flex;
+            width: 75%;
+            padding: 20px;
+        }
 
-function poisson(hash, difficulty) {
-  var earned = 0;
-  let lambda = hash / difficulty;
-  let L = Math.exp(-lambda);
-  let p = 1.0;
-  while (p > L) {
-      p *= Math.random();
-      earned += 1;
-    }
-  earned--;
-  return(earned);
-}
+        .right-column {
+            width: 50%;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-left: 10px;
+        }
 
-// update screen bc yk thats important
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-function updateScreen() {
-  // stats
-  document.getElementById("moneyCount").innerText = "Money: $" + money.toFixed(3);
-  document.getElementById("days").innerText = "Days: " + days;
-  
-  // handle reward
-  if (reward == "Pay Per Share") {
-    document.getElementById("reward").innerText = "Reward: Pay Per Share (-5%)";
-  } else {
-    document.getElementById("reward").innerText = "Reward: Blocks (-0%)";
-  }
-  
-  // handle hashrate calc
-  var hashrate = (miners[0] * 100 + miners[1] * 2500 + miners[2] * 15000) * (1 + 0.1 * upgrades.reduce((acc, curr) => acc + curr, 0));
-  if (hashrate < 1000) {
-    document.getElementById("hashes").innerText = "Hashrate: " + Math.floor(hashrate) + "H/s";
-  } else if (hashrate < 1000000) {
-    document.getElementById("hashes").innerText = "Hashrate: " + Math.floor(hashrate / 1000) + "kH/s";
-  } else {
-    document.getElementById("hashes").innerText = "Hashrate: " + Math.floor(hashrate / 1000000) + "mH/s";
-  }
-  
-  // handle miner buttons
-  for (let i = 0; i < miners.length; i++) {
-    document.getElementById("miner" + i + "count").innerText = "(" + miners[i] + ")";
-  }
-  for (let i = 0; i < minersCosts.length; i++) {
-    document.getElementById("miner" + i + "cost").innerText = "$" + minersCosts[i].toFixed(2);
-  }
-}
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
 
-// local storage stuff
-function updateLocalValues() {
-  localStorage.setItem("Money", money);
-  localStorage.setItem("Days", days);
-  localStorage.setItem("Reward", reward);
-  for (let i = 0; i < miners.length; i++) {
-    localStorage.setItem("Miners" + i, miners[i]);
-  }
-  for (let i = 0; i < upgrades.length; i++) {
-    localStorage.setItem("Upgrades" + i, upgrades[i]);
-  }
-  for (let i = 0; i < minersCosts.length; i++) {
-    localStorage.setItem("MinersCosts" + i, minersCosts[i]);
-  }
-}
+<header>
+    Crypto Mining Simulator
+</header>
 
-// handle purchasing
+<div class="container">
+    <!-- Left Column for Statistics -->
+    <div class="left-column">
+        <h3>Statistics:</h3>
+        <ul>
+            <li id="moneyCount">Money: ERROR</li>
+            <li id="hashes">Hashrate: 0H</li>
+            <li id="days">Days: 0</li>
+            <li id="reward">Reward: Pay Per Share </li>
+            <button class="button" id="changeReward">Change Reward</button>
+            <button class="button" id="reset">Reset Save</button>
+        </ul>
+    </div>
 
-function buyUpgrade(num) {
-  if (money >= upgradesCosts[num]) {
-    upgrades[num]++;
-    money -= upgradesCosts[num];
-    document.getElementById("upgrade" + num).style.visibility = "hidden";
-    updateScreen();
-  }
-}
-for (let i = 0; i < upgrades.length; i++) {
-  document.getElementById("upgrade" + i).addEventListener("click", function() {
-    buyUpgrade(i);
-  });
-}
+    <!-- Right Columns for Buttons -->
+    <div class="right-columns">
+        <!-- First Right Column -->
+        <div class="right-column">
+            <h3>Upgrades:</h3>
+            <button class="button" id="upgrade0">Ceiling Fan - +10% Hashrate<br>$100</button>
+            <button class="button" id="upgrade1">Box Fans - +10% Hashrate<br>$250</button>
+            <button class="button" id="upgrade2">Air Conditioner - +10% Hashrate<br>$1000</button>
+        </div>
 
-function buyMiner(num) {
-  if (money >= minersCosts[num]) {
-    miners[num]++;
-    money -= minersCosts[num].toFixed(2);
-    minersCosts[num] *= 1.1;
-    updateScreen();
-  }
-}
-for (let i = 0; i < miners.length; i++) {
-  document.getElementById("miner" + i).addEventListener("click", function() {
-    buyMiner(i);
-  });
-}
-
-// change Reward
-
-function changeReward() {
-  if (reward == "Pay Per Share") {
-    reward = "Blocks";
-  } else {
-    reward = "Pay Per Share";
-  }
-  updateScreen();
-}
-document.getElementById("changeReward").addEventListener("click", changeReward);
-
-// reset
-
-function reset() {
-  const confirmation = confirm("Are you sure you want to reset? This will clear all data.");
-  if (confirmation) {
-    localStorage.clear();
-    initialize();
-  }
-}
-
-document.getElementById("reset").addEventListener("click", reset);
-
+        <!-- Second Right Column -->
+        <div class="right-column">
+            <h3>Miners:</h3>
+            <button class="button" id="miner0"><strong id="miner0count">(0)</strong> USB Miner - 100H/s<br><span id="miner0cost">$20</span></button>
+            <button class="button" id="miner1"><strong id="miner1count">(0)</strong> Home Computer - 2.5kH/s<br><span id="miner1cost">$750</span></button>
+            <button class="button" id="miner2"><strong id="miner2count">(0)</strong> ASIC Miner - 15kH/s<br><span id="miner2cost">$25000</span></button>
+        </div>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
