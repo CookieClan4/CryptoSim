@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9567401286782685"
+     crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Simulator</title>
@@ -61,6 +63,22 @@
         .button:hover {
             background-color: #45a049;
         }
+        
+        h1 {
+            background-color: #3C9F40;
+            color: white;
+            text-align: left;
+            padding: 5px;
+            font-size: 14px;
+        }
+        
+        h2 {
+            background-color: #3C9F40;
+            color: white;
+            text-align: Center;
+            padding: 10px;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -99,9 +117,18 @@
             <button class="button" id="miner0"><strong id="miner0count">(0)</strong> USB Miner - 100H/s<br><span id="miner0cost">$20</span></button>
             <button class="button" id="miner1"><strong id="miner1count">(0)</strong> Home Computer - 2.5kH/s<br><span id="miner1cost">$750</span></button>
             <button class="button" id="miner2"><strong id="miner2count">(0)</strong> ASIC Miner - 15kH/s<br><span id="miner2cost">$25000</span></button>
+            <button class="button" id="miner3"><strong id="miner3count">(0)</strong> Mining Rig - 90kH/s<br><span id="miner3cost">$250000</span></button>
+            <button class="button" id="miner4"><strong id="miner4count">(0)</strong> Mining Warehouse - 1MH/s<br><span id="miner4cost">$3000000</span></button>
+            <button class="button" id="miner5"><strong id="miner5count">(0)</strong> Super Computer - 6MH/s<br><span id="miner5cost">$50000000</span></button>
         </div>
     </div>
 </div>
+<h2>Achievements:</h2>
+<h1 id="achievement0">My First Miner - Buy a USB Miner</h1>
+<h1 id="achievement1">Flying Solo - Mine a block</h1>
+<h1 id="achievement2">"Why is my electricity bill so high?" - Buy an ASIC Miner</h1>
+<h1 id="achievement3">Notable Miner - Have a hashrate over 1MH/s</h1>
+<h1 id="achievement4">Millionaire - Have at least $1,000,000</h1>
 <script src="script.js"></script>
 </body>
 </html>
